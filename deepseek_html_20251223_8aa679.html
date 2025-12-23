@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Kerja - GitHub Pages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-calendar-check"></i>
+                    <h1>Absensi Kerja</h1>
+                </div>
+                <div class="user-info">
+                    <span id="userNameDisplay">Guest</span>
+                    <button id="userMenuBtn" class="btn-user-menu">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="header-subtitle">
+                <p><i class="fas fa-cloud"></i> Data tersimpan di browser Anda (LocalStorage)</p>
+                <a href="https://github.com" target="_blank" class="github-link">
+                    <i class="fab fa-github"></i> Hosted on GitHub Pages
+                </a>
+            </div>
+        </header>
+
+        <!-- User Menu Modal -->
+        <div id="userModal" class="modal">
+            <div class="modal-content">
+                <h2><i class="fas fa-user-cog"></i> Pengaturan Pengguna</h2>
+                <div class="form-group">
+                    <label for="userNameInput"><i class="fas fa-user"></i> Nama Lengkap</label>
+                    <input type="text" id="userNameInput" placeholder="Masukkan nama Anda" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="userDepartment"><i class="fas fa-building"></i> Departemen (Opsional)</label>
+                    <input type="text" id="userDepartment" placeholder="Contoh: IT, HRD, Marketing">
+                </div>
+                <div class="modal-actions">
+                    <button id="saveUserBtn" class="btn-primary">
+                        <i class="fas fa-save"></i> Simpan Profil
+                    </button>
+                    <button id="closeModalBtn" class="btn-secondary">
+                        <i class="fas fa-times"></i> Tutup
+                    </button>
+                </div>
+                <div class="data-info">
+                    <p><i class="fas fa-database"></i> Data Tersimpan: <span id="dataCount">0</span> hari</p>
+                    <button id="exportAllBtn" class="btn-small">
+                        <i class="fas fa-download"></i> Backup Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Date & Time Section -->
+            <section class="datetime-section">
+                <div class="datetime-card">
+                    <div class="date-display">
+                        <div class="day-date">
+                            <span id="currentDay">Senin</span>
+                            <span id="currentDate">15 Januari 2024</span>
+                        </div>
+                        <div class="time-display">
+                            <i class="fas fa-clock"></i>
+                            <span id="currentTime">08:30:45</span>
+                        </div>
+                    </div>
+                    <div class="date-controls">
+                        <button id="prevDayBtn" class="btn-icon" title="Hari Sebelumnya">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <input type="date" id="datePicker" class="date-picker">
+                        <button id="todayBtn" class="btn-small" title="Hari Ini">Today</button>
+                        <button id="nextDayBtn" class="btn-icon" title="Hari Berikutnya">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Actions -->
+            <section class="attendance-section">
+                <h2 class="section-title">
+                    <i class="fas fa-fingerprint"></i> Absensi Hari Ini
+                </h2>
+                <div class="attendance-grid">
+                    <button id="clockInBtn" class="attendance-btn btn-checkin">
+                        <div class="btn-icon-large">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="btn-content">
+                            <span class="btn-title">CHECK-IN</span>
+                            <span class="btn-subtitle">Masuk Kerja</span>
+                        </div>
+                        <div class="btn-status" id="checkinStatus">-</div>
+                    </button>
+
+                    <button id="breakOutBtn" class="attendance-btn btn-breakout">
+                        <div class="btn-icon-large">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <div class="btn-content">
+                            <span class="btn-title">ISTIRAHAT</span>
+                            <span class="btn-subtitle">Keluar Istirahat</span>
+                        </div>
+                        <div class="btn-status" id="breakoutStatus">-</div>
+                    </button>
+
+                    <button id="breakInBtn" class="attendance-btn btn-breakin">
+                        <div class="btn-icon-large">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="btn-content">
+                            <span class="btn-title">KEMBALI</span>
+                            <span class="btn-subtitle">Masuk dari Istirahat</span>
+                        </div>
+                        <div class="btn-status" id="breakinStatus">-</div>
+                    </button>
+
+                    <button id="clockOutBtn" class="attendance-btn btn-checkout">
+                        <div class="btn-icon-large">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <div class="btn-content">
+                            <span class="btn-title">CHECK-OUT</span>
+                            <span class="btn-subtitle">Pulang Kerja</span>
+                        </div>
+                        <div class="btn-status" id="checkoutStatus">-</div>
+                    </button>
+                </div>
+
+                <div class="work-summary">
+                    <div class="summary-item">
+                        <i class="fas fa-business-time"></i>
+                        <div>
+                            <span class="summary-label">Total Jam Kerja</span>
+                            <span class="summary-value" id="totalWorkHours">0 jam 0 menit</span>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-calendar-day"></i>
+                        <div>
+                            <span class="summary-label">Status Hari Ini</span>
+                            <span class="summary-value" id="todayStatus">Belum Check-In</span>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <i class="fas fa-user-clock"></i>
+                        <div>
+                            <span class="summary-label">Terakhir Diupdate</span>
+                            <span class="summary-value" id="lastUpdate">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance History -->
+            <section class="history-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-history"></i> Riwayat Absensi
+                    </h2>
+                    <div class="section-actions">
+                        <div class="filter-group">
+                            <select id="monthFilter" class="filter-select">
+                                <option value="">Semua Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                            <select id="yearFilter" class="filter-select">
+                                <option value="">Semua Tahun</option>
+                            </select>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="printBtn" class="btn-action" title="Print">
+                                <i class="fas fa-print"></i>
+                            </button>
+                            <button id="exportBtn" class="btn-action" title="Export CSV">
+                                <i class="fas fa-file-csv"></i>
+                            </button>
+                            <button id="refreshBtn" class="btn-action" title="Refresh">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Hari</th>
+                                <th>Check-In</th>
+                                <th>Istirahat</th>
+                                <th>Kembali</th>
+                                <th>Check-Out</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <div class="pagination">
+                        <button id="prevPageBtn" class="btn-pagination" disabled>
+                            <i class="fas fa-chevron-left"></i> Sebelumnya
+                        </button>
+                        <span class="page-info">Halaman <span id="currentPage">1</span> dari <span id="totalPages">1</span></span>
+                        <button id="nextPageBtn" class="btn-pagination" disabled>
+                            Selanjutnya <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="table-summary">
+                        <p>
+                            <i class="fas fa-chart-bar"></i>
+                            Total: <span id="totalRecords">0</span> hari | 
+                            Rata-rata: <span id="averageHours">0</span> jam/hari
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics -->
+            <section class="stats-section">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-pie"></i> Statistik Bulan Ini
+                </h2>
+                <div class="stats-grid">
+                    <div class="stat-card stat-days">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="totalDays">0</span>
+                            <span class="stat-label">Hari Kerja</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-hours">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="totalMonthHours">0</span>
+                            <span class="stat-label">Jam Total</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-avg">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="avgDailyHours">0</span>
+                            <span class="stat-label">Jam/Hari</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-percent">
+                        <div class="stat-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="attendanceRate">0%</span>
+                            <span class="stat-label">Kehadiran</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p><strong>Absensi Kerja v1.0</strong> - Aplikasi Pencatatan Kehadiran</p>
+                    <p>© 2024 - Dibuat dengan <i class="fas fa-heart" style="color: #e74c3c;"></i> untuk produktivitas kerja</p>
+                </div>
+                <div class="footer-links">
+                    <button id="backupBtn" class="footer-link">
+                        <i class="fas fa-download"></i> Backup Data
+                    </button>
+                    <button id="restoreBtn" class="footer-link">
+                        <i class="fas fa-upload"></i> Restore Data
+                    </button>
+                    <button id="helpBtn" class="footer-link">
+                        <i class="fas fa-question-circle"></i> Bantuan
+                    </button>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>
+                    <i class="fas fa-info-circle"></i>
+                    Data disimpan secara lokal di browser Anda. 
+                    Untuk backup, gunakan fitur Export CSV.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Memproses...</p>
+        </div>
+    </div>
+
+    <!-- File Input for Restore (hidden) -->
+    <input type="file" id="restoreFileInput" accept=".csv,.json" style="display: none;">
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
